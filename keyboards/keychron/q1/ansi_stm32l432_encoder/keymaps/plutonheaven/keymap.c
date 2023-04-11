@@ -22,11 +22,35 @@ enum layers{
     MAC_BASE,
     MAC_FN,
     WIN_BASE,
-    WIN_FN
+    WIN_FN,
+	WIN_ALT
+};
+
+enum custom_keycodes {
+    EURO = SAFE_RANGE,
 };
 
 #define KC_TASK LGUI(KC_TAB)
 #define KC_FLXP LGUI(KC_E)
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case EURO:
+        if (record->event.pressed) {
+            // when keycode QMKBEST is pressed
+            SEND_STRING(SS_DOWN(X_RALT));
+				SEND_STRING(SS_TAP(X_KP_0));
+				SEND_STRING(SS_TAP(X_KP_1));
+				SEND_STRING(SS_TAP(X_KP_2));
+				SEND_STRING(SS_TAP(X_KP_8));
+				SEND_STRING(SS_UP(X_RALT));
+        } else {
+            // when keycode QMKBEST is released
+        }
+        break;
+    }
+    return true;
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_BASE] = LAYOUT_ansi_82(
@@ -51,7 +75,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,    KC_RBRC,  KC_BSLS,            KC_END,
         KC_CAPS,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,              KC_ENT,             KC_DEL,
         KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,              KC_RSFT,  KC_UP,
-        KC_LCTL,  KC_LCMD,  KC_LALT,                                KC_SPC,                                 KC_RALT,  MO(WIN_FN), KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT),
+        KC_LCTL,  KC_LCMD,  KC_LALT,                                KC_SPC,                              MO(WIN_ALT), MO(WIN_FN), KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [WIN_FN] = LAYOUT_ansi_82(
         _______,  KC_BRID,  KC_BRIU,  KC_TASK,  KC_FLXP,  RGB_VAD,  RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  _______,            _______,
@@ -59,6 +83,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
         _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,  _______,  _______,  _______,  _______,  _______,  _______,              _______,            _______,
         _______,            _______,  _______,  _______,  _______,  _______,  NK_TOGG,  _______,  _______,  _______,  _______,              _______,  _______,
+        _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,  _______,  _______),   
+		
+    [WIN_ALT] = LAYOUT_ansi_82(
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______,  _______,  EURO,     _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______,            _______,
+        _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______,  _______,
         _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,  _______,  _______),
 };
 
@@ -67,6 +99,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [MAC_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
     [MAC_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
     [WIN_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [WIN_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)}
+    [WIN_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
+    [WIN_ALT]   = { ENCODER_CCW_CW(RGB_HUI, RGB_HUD)}
+	
 };
 #endif // ENCODER_MAP_ENABLE
